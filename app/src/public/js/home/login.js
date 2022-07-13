@@ -16,6 +16,15 @@ function login(){ //버튼 클릭 시 login 정보 가져오기 가능
         psword: psword.value,
     };
     
-    console.log(req);
-    //fetch();
+    //console.log(req);
+
+    //console.log(req, JSON.stringify(req));
+    //console.log();
+    fetch("/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(req)
+    }); //서버와 데이터를 어떤 경로에서 주고받을 지 정해야함
 }
