@@ -26,5 +26,7 @@ function login(){ //버튼 클릭 시 login 정보 가져오기 가능
             "Content-Type": "application/json"
         },
         body: JSON.stringify(req)
-    }); //서버와 데이터를 어떤 경로에서 주고받을 지 정해야함
+    })
+    .then( (res) => res.json())
+    .then( (res) => console.log(res)); //서버와 데이터를 어떤 경로에서 주고받을 지 정해야함 //promise형태
 }

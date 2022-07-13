@@ -17,6 +17,7 @@
 
 
 const express = require('express'); // 모듈
+const bodyParser = require("body-parser"); //body 파싱
 const app = express();
 
 //const PORT = 3000;
@@ -43,7 +44,12 @@ app.set('view engine', 'ejs'); //views 엔진
 
 
 app.use(express.static(`${__dirname}/src/public`)); //login.ejs와 login.js를 연결하는 미들웨어
+app.use(bodyParser.json());
+
+//url을 통해 전달되는 데이터에 한글, 공백 등과 같은 문자가 포함될 경우, 제대로 인식되지 않는 문제 해결
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/", home); // use -> 미들 웨어를 등록해주는 메서드
+
 
 // app.listen(PORT, () => {
 //     console.log('서버 가동');
