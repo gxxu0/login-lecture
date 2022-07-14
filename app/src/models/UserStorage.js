@@ -23,6 +23,17 @@ class UserStorage { //파일명과 동일하게 하는게 좋음
         //return this.#users;
         return newUsers;
     }
+    static getUserInfo(id){
+        const users = this.#users;
+        const idx = users.id.indexOf(id);
+        const usersKeys = Object.keys(users); // => [id, psword, name]
+        const userInfo = usersKeys.reduce( (newUsers, info) => {
+            newUsers[info] = users[info][idx];
+            return newUsers;
+        }, {});
+
+        return userInfo;
+    }
 
 }
 module.exports = UserStorage;

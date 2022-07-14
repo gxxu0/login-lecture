@@ -1,4 +1,6 @@
+//node라는 서버의 기본 설정이 이뤄짐
 "use strict"
+
 
 // const http = require('http');
 // const app = http.createServer((req, res) => {
