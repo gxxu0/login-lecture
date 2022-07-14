@@ -23,13 +23,12 @@ function login(){ //버튼 클릭 시 login 정보 가져오기 가능
     fetch("/login", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(req)
+        body: JSON.stringify(req),
     })
+    .then((res) => res.json())
     .then( 
-        (res) => res.json()
-    ).then( 
         (res) => {
             //console.log(res)
             if(res.success){
@@ -40,8 +39,8 @@ function login(){ //버튼 클릭 시 login 정보 가져오기 가능
         }
     ).catch( 
         (err) => {
-            console.error(new Error("로그인 중 에러 발생"));
-            //console.error("로그인 중 에러 발생");
+            //console.error(new Error("로그인 중 에러 발생")); //밑과 같음
+            console.error("로그인 중 에러 발생");
     }); 
     //서버와 데이터를 어떤 경로에서 주고받을 지 정해야함 //promise형태
 }
