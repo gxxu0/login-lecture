@@ -27,6 +27,21 @@ function login(){ //버튼 클릭 시 login 정보 가져오기 가능
         },
         body: JSON.stringify(req)
     })
-    .then( (res) => res.json())
-    .then( (res) => console.log(res)); //서버와 데이터를 어떤 경로에서 주고받을 지 정해야함 //promise형태
+    .then( 
+        (res) => res.json()
+    ).then( 
+        (res) => {
+            //console.log(res)
+            if(res.success){
+                location.href = "/";
+            }else{
+                alert(res.msg); //로그인 실패 시, alert창 띄우기
+            }
+        }
+    ).catch( 
+        (err) => {
+            console.error(new Error("로그인 중 에러 발생"));
+            //console.error("로그인 중 에러 발생");
+    }); 
+    //서버와 데이터를 어떤 경로에서 주고받을 지 정해야함 //promise형태
 }
