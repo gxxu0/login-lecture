@@ -34,6 +34,13 @@ class UserStorage { //파일명과 동일하게 하는게 좋음
 
         return userInfo;
     }
-
+    static save(userInfo){  //서버가 껐다 켜졌을 때 초기화 됨. 따라서 데이터를 파일에 저장해야함. 
+        const users = this.#users;
+        users.id.push(userInfo.id);
+        users.name.push(userInfo.name);
+        users.psword.push(userInfo.psword);
+        //console.log(users); //{id: [ 'jinny', '지니', '염진희', 'jinny' ],psword: [ '1234', '12345', '123456', '123' ],name: [ '지니', '지니지니', '지니지니지니', '염진희' ]}
+        return { success: true };
+    }
 }
 module.exports = UserStorage;
