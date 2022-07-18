@@ -63,13 +63,17 @@ html {
   }
  
   
-  button{
-    background-color: aliceblue;
+  #button{
+    color: white;
     font-weight: bold;
     width: 100%;
-    height: 35px;
     border-radius: 7px;
-    font-size: 15px;
+    font-size: 20px;
+    text-align: center;
+  }
+  #button:hover{
+    color: rgb(210, 213, 253);
+    cursor: pointer;
   }
   #sign{
     text-align: center;
