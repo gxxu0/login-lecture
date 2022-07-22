@@ -1,6 +1,8 @@
 "use strict";
 
-const fs = require("fs"); //파일시스템 불러오기. fs를 이용하여 users.json에 접근
+const fs = require("fs").promises; //파일시스템 불러오기. fs를 이용하여 users.json에 접근
+//promises -> fs가 promise반환
+//promise : 약속. promise가 수행하는 동작이 끝남과 동시에 상태를 알려주기 때문에 비동기 처리에 아주 효과적. 
 
 
 class UserStorage { //파일명과 동일하게 하는게 좋음
@@ -12,6 +14,20 @@ class UserStorage { //파일명과 동일하게 하는게 좋음
     //     name: ["지니", "지니지니", "지니지니지니"]
     // }; => users.json
 
+    //가독성 좋도록 getUserInfo 정리
+    
+    static #getUserInfo(data, id) {
+        const users = JSON.parse(data);
+            const idx = users.id.indexOf(id);
+            const usersKeys = Object.keys(users); // => [id, psword, name]
+            const userInfo = usersKeys.reduce( (newUsers, info) => {
+                newUsers[info] = users[info][idx];
+                return newUsers;
+            }, {});
+            //console.log(userInfo);
+
+            return userInfo;
+    }
     //데이터를 받아올 수 있도록 메서드 생성
     static getUsers(...fields){ // class자체에서 메서드에 접근하도록 static붙이기
         //const users = this.#users;
@@ -28,22 +44,43 @@ class UserStorage { //파일명과 동일하게 하는게 좋음
     }
     static getUserInfo(id){
         //const users = this.#users;
-        fs.readFile("./src/databases/users.json", (err, data) => {
-            if(err) throw err;
-            //console.log(JSON.parse(data)); //data를 볼 수 있는 데이터로 불러오기
-            const users = JSON.parse(data);
 
-            const idx = users.id.indexOf(id);
-            const usersKeys = Object.keys(users); // => [id, psword, name]
-            const userInfo = usersKeys.reduce( (newUsers, info) => {
-                newUsers[info] = users[info][idx];
-                return newUsers;
-            }, {});
+        //promise반환함. Promise { <pending> } ) promise를 반환하면 .then에 접근할 수 있음.
+        //<pending> -> data를 전부 읽어오질 못했다는 뜻.
+        return fs.readFile("./src/databases/users.json") //Promise { <pending> }
+        .then( (data) => { 
+            // const users = JSON.parse(data);
+            // const idx = users.id.indexOf(id);
+            // const usersKeys = Object.keys(users); // => [id, psword, name]
+            // const userInfo = usersKeys.reduce( (newUsers, info) => {
+            //     newUsers[info] = users[info][idx];
+            //     return newUsers;
+            // }, {});
+            // //console.log(userInfo);
+
+            // return userInfo;
+
+            
+            return this.#getUserInfo(data, id); //위(주석) 코드들 가독성 좋게 !!
+        })
+        .catch( (err) => console.log(err) );
+        // , (err, data) => {
+        //     if(err) throw err;
+        //     //console.log(JSON.parse(data)); //data를 볼 수 있는 데이터로 불러오기
+        //     const users = JSON.parse(data);
+
+        //     const idx = users.id.indexOf(id);
+        //     const usersKeys = Object.keys(users); // => [id, psword, name]
+        //     const userInfo = usersKeys.reduce( (newUsers, info) => {
+        //         newUsers[info] = users[info][idx];
+        //         return newUsers;
+        //     }, {});
     
-            return userInfo;
-        });
+        //     return userInfo;
+        // });
 
     }
+
     static save(userInfo){  //서버가 껐다 켜졌을 때 초기화 됨. 따라서 데이터를 파일에 저장해야함. 
         //const users = this.#users;
         users.id.push(userInfo.id);

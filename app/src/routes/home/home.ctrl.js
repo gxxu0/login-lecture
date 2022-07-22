@@ -35,10 +35,10 @@ const output = {
 
 
 const process = {
-    login: (req, res) => {
+    login: async (req, res) => {
 
         const user = new User(req.body);
-        const response = user.login();
+        const response = await user.login(); //User에 await을 부여했으니 여기에도 부여!
         //console.log(response);
         return res.json(response);
 
@@ -79,7 +79,7 @@ const process = {
     },
     register: (req, res) => {
         const user = new User(req.body);
-        const response = user.login();
+        const response = user.login(); 
         return res.json(response);
     },
     register: (req, res) => {

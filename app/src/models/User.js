@@ -7,21 +7,26 @@ class User{
         
     }
 
-    login(){
+    async login(){
         //const { id, psword } = UserStorage.getUsers("id", "psword");
         //console.log(id, psword);
         const client = this.body;
         //const { id, psword } = UserStorage.getUserInfo(client.id);
         UserStorage.getUserInfo(client.id);
-        console.log(UserStorage.getUserInfo(client.id)); //undefined
+
+        //await을 사용하여 데이터를 모두 읽어올 때 까지 기다리게함.
+        //await은 항상 promise를 반환하는 애한테만 부여할 수 있음!!!
+        //promise를 반환하기 때문에 .then()으로도 접근하여 데이터를 가져올 수 없음. 
+        //await을 사용해준 이유는 "가독성". fs(file system)에서도 await을 가져올 수 없음. 
+        const { id, psword } = await UserStorage.getUserInfo(client.id); //undefined
         //console.log(a);
-        // if( id ){
-        //     if (id === client.id && psword === client.psword){
-        //         return { success : true};
-        //     }
-        //     return { success : false, msg: "비밀번호가 틀렸습니다."};
-        // }
-        // return { success : false, msg: "존재하지 않는 아이디입니다."};
+        if( id ){
+            if (id === client.id && psword === client.psword){
+                return { success : true};
+            }
+            return { success : false, msg: "비밀번호가 틀렸습니다."};
+        }
+        return { success : false, msg: "존재하지 않는 아이디입니다."};
         
 
     }
