@@ -1,17 +1,20 @@
 "use strict";
 
+const fs = require("fs"); //파일시스템 불러오기. fs를 이용하여 users.json에 접근
+
+
 class UserStorage { //파일명과 동일하게 하는게 좋음
-    static #users = { //UserStorage 자체에서 users변수에 접근 가능
-        //#users ==> public -> private(외부에서 부를 수 x) 
+    // static #users = { //UserStorage 자체에서 users변수에 접근 가능
+    //     //#users ==> public -> private(외부에서 부를 수 x) 
         
-        id: ["jinny", "지니", "염진희"],
-        psword: ["1234", "12345", "123456"],
-        name: ["지니", "지니지니", "지니지니지니"]
-    };
+    //     id: ["jinny", "지니", "염진희"],
+    //     psword: ["1234", "12345", "123456"],
+    //     name: ["지니", "지니지니", "지니지니지니"]
+    // }; => users.json
 
     //데이터를 받아올 수 있도록 메서드 생성
     static getUsers(...fields){ // class자체에서 메서드에 접근하도록 static붙이기
-        const users = this.#users;
+        //const users = this.#users;
         const newUsers = fields.reduce( (newUsers, field) => {
             //console.log(newUsers, field);
             if(users.hasOwnProperty(field)){
@@ -24,18 +27,25 @@ class UserStorage { //파일명과 동일하게 하는게 좋음
         return newUsers;
     }
     static getUserInfo(id){
-        const users = this.#users;
-        const idx = users.id.indexOf(id);
-        const usersKeys = Object.keys(users); // => [id, psword, name]
-        const userInfo = usersKeys.reduce( (newUsers, info) => {
-            newUsers[info] = users[info][idx];
-            return newUsers;
-        }, {});
+        //const users = this.#users;
+        fs.readFile("./src/databases/users.json", (err, data) => {
+            if(err) throw err;
+            //console.log(JSON.parse(data)); //data를 볼 수 있는 데이터로 불러오기
+            const users = JSON.parse(data);
 
-        return userInfo;
+            const idx = users.id.indexOf(id);
+            const usersKeys = Object.keys(users); // => [id, psword, name]
+            const userInfo = usersKeys.reduce( (newUsers, info) => {
+                newUsers[info] = users[info][idx];
+                return newUsers;
+            }, {});
+    
+            return userInfo;
+        });
+
     }
     static save(userInfo){  //서버가 껐다 켜졌을 때 초기화 됨. 따라서 데이터를 파일에 저장해야함. 
-        const users = this.#users;
+        //const users = this.#users;
         users.id.push(userInfo.id);
         users.name.push(userInfo.name);
         users.psword.push(userInfo.psword);

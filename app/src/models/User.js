@@ -11,15 +11,17 @@ class User{
         //const { id, psword } = UserStorage.getUsers("id", "psword");
         //console.log(id, psword);
         const client = this.body;
-        const { id, psword } = UserStorage.getUserInfo(client.id);
+        //const { id, psword } = UserStorage.getUserInfo(client.id);
+        UserStorage.getUserInfo(client.id);
+        console.log(UserStorage.getUserInfo(client.id)); //undefined
         //console.log(a);
-        if( id ){
-            if (id === client.id && psword === client.psword){
-                return { success : true};
-            }
-            return { success : false, msg: "비밀번호가 틀렸습니다."};
-        }
-        return { success : false, msg: "존재하지 않는 아이디입니다."};
+        // if( id ){
+        //     if (id === client.id && psword === client.psword){
+        //         return { success : true};
+        //     }
+        //     return { success : false, msg: "비밀번호가 틀렸습니다."};
+        // }
+        // return { success : false, msg: "존재하지 않는 아이디입니다."};
         
 
     }
