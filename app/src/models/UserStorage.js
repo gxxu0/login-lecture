@@ -18,29 +18,45 @@ class UserStorage { //파일명과 동일하게 하는게 좋음
     
     static #getUserInfo(data, id) {
         const users = JSON.parse(data);
-            const idx = users.id.indexOf(id);
-            const usersKeys = Object.keys(users); // => [id, psword, name]
-            const userInfo = usersKeys.reduce( (newUsers, info) => {
-                newUsers[info] = users[info][idx];
-                return newUsers;
-            }, {});
-            //console.log(userInfo);
+        const idx = users.id.indexOf(id);
+        const usersKeys = Object.keys(users); // => [id, psword, name]
+        const userInfo = usersKeys.reduce( (newUsers, info) => {
+            newUsers[info] = users[info][idx];
+            return newUsers;
+        }, {});
+        //console.log(userInfo);
 
-            return userInfo;
+        return userInfo;
     }
-    //데이터를 받아올 수 있도록 메서드 생성
-    static getUsers(...fields){ // class자체에서 메서드에 접근하도록 static붙이기
-        //const users = this.#users;
+    static #getUsers(data, isAll, fields){
+        const users = JSON.parse(data);
+        if (isAll) return users;
         const newUsers = fields.reduce( (newUsers, field) => {
-            //console.log(newUsers, field);
             if(users.hasOwnProperty(field)){
                 newUsers[field] = users[field];
             }
             return newUsers;
         }, {});
-        //console.log(newUsers);
-        //return this.#users;
         return newUsers;
+    }
+    //데이터를 받아올 수 있도록 메서드 생성
+    static getUsers(isAll, ...fields){ // class자체에서 메서드에 접근하도록 static붙이기
+        return fs.readFile("./src/databases/users.json") //Promise { <pending> }
+        .then( (data) => { 
+            return this.#getUsers(data, isAll, fields); //위(주석) 코드들 가독성 좋게 !!
+        })
+        .catch( (err) => console.log(err) );
+        //const users = this.#users;
+        // const newUsers = fields.reduce( (newUsers, field) => {
+        //     //console.log(newUsers, field);
+        //     if(users.hasOwnProperty(field)){
+        //         newUsers[field] = users[field];
+        //     }
+        //     return newUsers;
+        // }, {});
+        // //console.log(newUsers);
+        // //return this.#users;
+        // return newUsers;
     }
     static getUserInfo(id){
         //const users = this.#users;
@@ -81,13 +97,28 @@ class UserStorage { //파일명과 동일하게 하는게 좋음
 
     }
 
-    static save(userInfo){  //서버가 껐다 켜졌을 때 초기화 됨. 따라서 데이터를 파일에 저장해야함. 
+    static async save(userInfo){  //서버가 껐다 켜졌을 때 초기화 됨. 따라서 데이터를 파일에 저장해야함. 
         //const users = this.#users;
+        // users.id.push(userInfo.id);
+        // users.name.push(userInfo.name);
+        // users.psword.push(userInfo.psword);
+        // //console.log(users); //{id: [ 'jinny', '지니', '염진희', 'jinny' ],psword: [ '1234', '12345', '123456', '123' ],name: [ '지니', '지니지니', '지니지니지니', '염진희' ]}
+        // return { success: true };
+
+        //users.json 파일의 데이터를 읽어온 다음에 data에 추가하고 싶은 데이터를 넣은 후 fs.writeFile하기.
+        const users = await this.getUsers(true);
+        //console.log(users);
+        if(users.id.includes(userInfo.id)) { 
+            throw "이미 존재하는 아이디입니다.";
+
+        }
+        //client가 입력한 user정보의 아이디가 database의 id에 포함되어있지 않으면
         users.id.push(userInfo.id);
         users.name.push(userInfo.name);
         users.psword.push(userInfo.psword);
-        //console.log(users); //{id: [ 'jinny', '지니', '염진희', 'jinny' ],psword: [ '1234', '12345', '123456', '123' ],name: [ '지니', '지니지니', '지니지니지니', '염진희' ]}
-        return { success: true };
+        //데이터 추가저장
+        fs.writeFile("./src/databases/users.json", JSON.stringify(users));
+        return { success : true };
     }
 }
 module.exports = UserStorage;

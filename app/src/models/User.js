@@ -30,11 +30,18 @@ class User{
         
 
     }
-    register(){
+    async register(){
         const client = this.body;
-        const response = UserStorage.save(client);
-        UserStorage.save(client);
-        return response;
+        try{
+            const response = await UserStorage.save(client);
+            UserStorage.save(client);
+            //console.log(response)
+            return response;
+        }catch(err){
+            //console.log(err);
+            return {success: false, msg : err};
+        }
+
     }
 }
 module.exports = User; //외부에서 사용할 수 있도록 작성
